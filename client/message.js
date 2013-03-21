@@ -154,6 +154,23 @@ module.exports = function (
 	//                    // Only exists at all if MAGIC == 1
 	// CHECKSUM = int32  // CRC32 checksum of the PAYLOAD
 	// PAYLOAD = Bytes[] // Message content
+	
+	// New message format of N length in v0.8 and after
+	//  0                   1                   2                   3
+	//  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	// |                             CRC32                             |
+	// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	// |     MAGIC (2)   |  COMPRESSION  |           KEY LENGTH (K)    |
+	// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	// |      KEY LENGTH (cont.)         |           KEY               /
+	// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                             /
+	// /                         KEY  (cont.)                          /
+	//                              ...								   |
+	// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	// /                         PAYLOAD	(N - K - 10)			   /
+	// /						    ...								   |
+	// +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	Message.parse = function (buffer) {
 		var m = new Message()
 		var payload = new Buffer(buffer.length - 10)

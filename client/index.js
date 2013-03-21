@@ -19,6 +19,7 @@ var crc32 = require('buffer-crc32')
 module.exports = function (logger) {
 	var State = require('./state')(inherits)
 	var Message = require('./message')(zlib, snappy, crc32)
+	var MessageSet = require('./message-set')(logger)
 	var RequestHeader = require('./request-header')()
 	var ResponseHeader = require('./response-header')(inherits, State)
 	var FetchResponse = require('./fetch-response')(inherits, State, Message)
